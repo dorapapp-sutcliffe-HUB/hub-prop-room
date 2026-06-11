@@ -772,8 +772,8 @@ async function submitRequest(){
 }
 
 // ===== ADD PROP (ADMIN) =====
-let adminUnlocked = false;
-let adminPassword = '';
+let adminUnlocked = !!sessionStorage.getItem('hub_admin_pw');
+let adminPassword = sessionStorage.getItem('hub_admin_pw') || '';
 
 function openAddProp(){
   const overlay = document.getElementById('add-prop-overlay');
@@ -783,6 +783,8 @@ function openAddProp(){
     document.getElementById('ap-auth').style.display = 'none';
     document.getElementById('ap-form').style.display = 'block';
     populateAdminDataLists();
+    ['ap-name','ap-cat','ap-loc','ap-photo','ap-colour','ap-material','ap-tags','ap-notes'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+    document.getElementById('ap-status').value='Available';
   } else {
     document.getElementById('ap-auth').style.display = 'block';
     document.getElementById('ap-form').style.display = 'none';
@@ -797,6 +799,7 @@ function unlockAdmin(){
   if(!pw) return;
   adminPassword = pw;
   adminUnlocked = true;
+  sessionStorage.setItem('hub_admin_pw', pw);
   document.getElementById('ap-auth').style.display = 'none';
   document.getElementById('ap-form').style.display = 'block';
   populateAdminDataLists();
