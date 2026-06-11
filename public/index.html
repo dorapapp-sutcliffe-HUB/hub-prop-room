@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HUB Prop Room</title>
+<style>
+@font-face { font-family:'MuseoSans'; src:url('MuseoSans-300.otf') format('opentype'); font-weight:300; font-style:normal; }
+@font-face { font-family:'MuseoSans'; src:url('MuseoSans-700.otf') format('opentype'); font-weight:700; font-style:normal; }
+@font-face { font-family:'MuseoSans'; src:url('MuseoSans-900.otf') format('opentype'); font-weight:900; font-style:normal; }
+
+*{margin:0;padding:0;box-sizing:border-box;}
+:root{
+  --ink:#172327;
+  --ink2:#1b2b30;
+  --ink3:#223038;
+  --acid:#D4FF03;
+  --light:#FFFFFF;
+  --mist:#E1F9FF;
+  --powder:#EFEFDA;
+  --cupric:#00E6CB;
+  --carotene:#FF7D59;
+}
+html{scroll-behavior:smooth;}
+body{font-family:'MuseoSans','Helvetica Neue',Arial,sans-serif;background:var(--ink);color:var(--light);min-height:100vh;font-weight:500;-webkit-font-smoothing:antialiased;}
+
+/* ===== NAV ===== */
+nav{
+  position:fixed;top:0;left:0;right:0;z-index:200;
+  background:var(--ink);
+  border-bottom:1px solid rgba(255,255,255,0.07);
+  height:88px;padding:0 40px;
+  display:flex;align-items:center;justify-content:space-between;
+}
+.nav-logo{
+  display:flex;align-items:center;gap:20px;cursor:pointer;
+  text-decoration:none;line-height:1;
+}
+.nav-logo svg{display:block;flex-shrink:0;}
+.nav-logo-sub{
+  font-size:11px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;
+  color:rgba(255,255,255,0.35);border-left:1.5px solid rgba(255,255,255,0.15);
+  padding-left:20px;
+}
+.nav-links{display:flex;align-items:center;gap:8px;}
+.nav-link{
+  color:rgba(255,255,255,0.5);text-decoration:none;
+  font-size:13px;font-weight:700;letter-spacing:0.5px;cursor:pointer;
+  padding:8px 14px;transition:color 0.2s;
+}
+.nav-link:hover{color:var(--light);}
+.nav-link.active{color:var(--light);}
+.nav-link.acid{background:var(--acid);color:var(--ink);padding:8px 18px;}
+.nav-link.acid:hover{opacity:0.9;color:var(--ink);}
+
+/* ===== PAGES ===== */
+.page{display:none;padding-top:88px;min-height:100vh;}
+.page.active{display:block;}
+
+/* ===== HOME HERO ===== */
+.hero{
+  background:var(--ink);padding:72px 40px 56px;
+  position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;top:0;right:0;width:50%;height:100%;
+  background:linear-gradient(135deg,transparent 0%,rgba(212,255,3,0.025) 100%);
+  pointer-events:none;
+}
+.hero-bg-word{
+  position:absolute;bottom:-40px;right:-30px;
+  font-size:320px;font-weight:900;
+  color:rgba(212,255,3,0.03);line-height:1;
+  pointer-events:none;user-select:none;letter-spacing:-10px;
+}
+.eyebrow{
+  font-size:10px;font-weight:700;letter-spacing:3.5px;
+  text-transform:uppercase;color:var(--acid);margin-bottom:18px;
+  display:flex;align-items:center;gap:10px;
+}
+.eyebrow::before{content:'';display:block;width:20px;height:2px;background:var(--acid);}
+.hero h1{
+  font-size:80px;font-weight:900;line-height:0.95;
+  color:var(--light);max-width:700px;margin-bottom:20px;
+  letter-spacing:-3px;
+}
+.hero h1 em{color:var(--acid);font-style:normal;}
+.hero-sub{
+  font-size:16px;font-weight:300;color:rgba(255,255,255,0.45);
+  max-width:460px;margin-bottom:40px;line-height:1.65;
+}
+.search-wrap{display:flex;align-items:stretch;max-width:600px;margin-bottom:28px;}
+.search-wrap input{
+  flex:1;background:rgba(255,255,255,0.06);
+  border:1.5px solid rgba(255,255,255,0.12);border-right:none;
+  color:var(--light);padding:0 20px;
+  font-family:'MuseoSans',sans-serif;font-size:15px;font-weight:500;
+  outline:none;height:54px;transition:border-color 0.2s;
+}
+.search-wrap input:focus{border-color:var(--acid);}
+.search-wrap input::placeholder{color:rgba(255,255,255,0.3);}
+.search-wrap button{
+  background:var(--acid);color:var(--ink);border:none;
+  padding:0 28px;font-family:'MuseoSans',sans-serif;
+  font-size:13px;font-weight:700;letter-spacing:0.5px;cursor:pointer;
+  white-space:nowrap;transition:opacity 0.2s;
+}
+.search-wrap button:hover{opacity:0.9;}
+
+.cat-pills{display:flex;gap:8px;flex-wrap:wrap;}
+.pill{
+  padding:7px 16px;border:1px solid rgba(255,255,255,0.12);
+  font-size:12px;font-weight:700;letter-spacing:0.5px;
+  color:rgba(255,255,255,0.5);cursor:pointer;
+  transition:all 0.18s;border-radius:2px;
+}
+.pill:hover,.pill.active{border-color:var(--acid);color:var(--acid);background:rgba(212,255,3,0.07);}
+
+/* ===== STATS ===== */
+.stats-bar{
+  display:flex;gap:0;
+  border-top:1px solid rgba(255,255,255,0.06);
+  border-bottom:1px solid rgba(255,255,255,0.06);
+}
+.stat{
+  flex:1;padding:20px 32px;
+  border-right:1px solid rgba(255,255,255,0.06);
+}
+.stat:last-child{border-right:none;}
+.stat-n{font-size:32px;font-weight:900;line-height:1;}
+.stat-l{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.3);margin-top:4px;}
+
+/* ===== SECTION ===== */
+.section{padding:44px 40px;}
+.section-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;}
+.section-title{font-size:10px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:rgba(255,255,255,0.35);}
+.section-more{font-size:13px;font-weight:700;color:var(--acid);cursor:pointer;text-decoration:none;letter-spacing:0.3px;}
+.section-more:hover{text-decoration:underline;}
+
+/* ===== PROP GRID ===== */
+.prop-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px;}
+.prop-card{
+  background:rgba(255,255,255,0.04);
+  border:1px solid rgba(255,255,255,0.07);
+  cursor:pointer;transition:all 0.22s;position:relative;overflow:hidden;
+}
+.prop-card:hover{border-color:var(--acid);transform:translateY(-4px);box-shadow:0 16px 48px rgba(0,0,0,0.45);}
+.prop-card:hover .card-hover{opacity:1;}
+.card-img-wrap{position:relative;overflow:hidden;}
+.card-img{
+  width:100%;aspect-ratio:4/3;object-fit:cover;display:block;
+  transition:transform 0.35s;background:var(--ink3);
+}
+.prop-card:hover .card-img{transform:scale(1.04);}
+.card-hover{
+  position:absolute;inset:0;background:rgba(23,35,39,0.72);
+  display:flex;align-items:center;justify-content:center;
+  opacity:0;transition:opacity 0.22s;
+}
+.card-hover-btn{
+  background:var(--acid);color:var(--ink);border:none;
+  padding:11px 26px;font-family:'MuseoSans',sans-serif;
+  font-size:13px;font-weight:700;cursor:pointer;letter-spacing:0.5px;
+}
+.card-body{padding:14px 16px 16px;}
+.card-cat{font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:var(--acid);margin-bottom:5px;}
+.card-name{font-size:14px;font-weight:700;color:var(--light);margin-bottom:10px;line-height:1.3;}
+.card-foot{display:flex;align-items:center;justify-content:space-between;}
+.card-loc{font-size:11px;font-weight:500;color:rgba(255,255,255,0.35);}
+.badge{font-size:9px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;}
+.b-available{background:rgba(0,230,203,0.12);color:var(--cupric);}
+.b-inuse{background:rgba(255,125,89,0.12);color:var(--carotene);}
+.b-reserved{background:rgba(212,255,3,0.12);color:var(--acid);}
+
+/* ===== CATALOGUE ===== */
+.cat-layout{display:flex;min-height:calc(100vh - 88px);}
+.sidebar{
+  width:232px;min-width:232px;
+  border-right:1px solid rgba(255,255,255,0.06);
+  padding:28px 20px;
+  position:sticky;top:88px;
+  height:calc(100vh - 88px);overflow-y:auto;align-self:flex-start;
+}
+.sidebar::-webkit-scrollbar{width:3px;}
+.sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);}
+.fg{margin-bottom:28px;}
+.fg-title{font-size:9px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;color:rgba(255,255,255,0.25);margin-bottom:10px;}
+.fo{
+  display:flex;align-items:center;gap:10px;padding:6px 0;
+  cursor:pointer;font-size:13px;font-weight:500;color:rgba(255,255,255,0.55);
+  transition:color 0.15s;
+}
+.fo:hover{color:var(--light);}
+.fo.active{color:var(--acid);}
+.fcheck{
+  width:15px;height:15px;border:1px solid rgba(255,255,255,0.18);
+  display:flex;align-items:center;justify-content:center;flex-shrink:0;
+  transition:all 0.15s;font-size:9px;
+}
+.fo.active .fcheck{background:var(--acid);border-color:var(--acid);color:var(--ink);}
+.fcount{margin-left:auto;font-size:11px;color:rgba(255,255,255,0.2);}
+
+.cat-main{flex:1;padding:28px 36px;min-width:0;}
+.cat-toolbar{display:flex;align-items:center;gap:12px;margin-bottom:20px;flex-wrap:wrap;}
+.cat-toolbar .search-wrap{margin-bottom:0;max-width:340px;}
+.cat-toolbar .search-wrap input{height:42px;font-size:14px;}
+.cat-toolbar .search-wrap button{padding:0 18px;font-size:12px;}
+.sort-sel{
+  background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);
+  color:rgba(255,255,255,0.55);padding:0 12px;height:42px;
+  font-family:'MuseoSans',sans-serif;font-size:13px;cursor:pointer;outline:none;
+}
+.rcount{margin-left:auto;font-size:13px;color:rgba(255,255,255,0.35);font-weight:500;}
+.active-chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;min-height:0;}
+.chip{
+  display:flex;align-items:center;gap:6px;
+  background:rgba(212,255,3,0.09);border:1px solid rgba(212,255,3,0.25);
+  color:var(--acid);padding:4px 10px;
+  font-size:11px;font-weight:700;letter-spacing:0.5px;
+}
+.chip-x{cursor:pointer;opacity:0.6;font-size:14px;line-height:1;}
+.chip-x:hover{opacity:1;}
+.empty-state{
+  padding:60px 0;text-align:center;
+  color:rgba(255,255,255,0.25);font-size:14px;font-weight:300;
+}
+.empty-state strong{display:block;font-size:18px;font-weight:700;color:rgba(255,255,255,0.3);margin-bottom:8px;}
+
+/* ===== DETAIL ===== */
+.detail-nav{padding:24px 40px 0;display:flex;align-items:center;gap:8px;}
+.back-btn{
+  font-size:13px;font-weight:700;color:rgba(255,255,255,0.4);
+  cursor:pointer;display:inline-flex;align-items:center;gap:8px;
+  transition:color 0.2s;background:none;border:none;font-family:'MuseoSans',sans-serif;
+}
+.back-btn:hover{color:var(--acid);}
+.detail-layout{display:grid;grid-template-columns:1fr 400px;}
+.detail-img-wrap{background:var(--ink2);}
+.detail-img{width:100%;aspect-ratio:4/3;object-fit:cover;display:block;}
+.detail-panel{
+  padding:36px 32px;border-left:1px solid rgba(255,255,255,0.06);
+  display:flex;flex-direction:column;min-height:500px;
+}
+.detail-cat{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--acid);margin-bottom:8px;}
+.detail-title{font-size:30px;font-weight:900;color:var(--light);line-height:1.1;margin-bottom:14px;letter-spacing:-0.5px;}
+.detail-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:24px;}
+.tag{padding:3px 10px;border:1px solid rgba(255,255,255,0.12);font-size:10px;font-weight:700;color:rgba(255,255,255,0.4);letter-spacing:0.5px;}
+hr.div{border:none;border-top:1px solid rgba(255,255,255,0.07);margin:0 0 20px;}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px 12px;margin-bottom:20px;}
+.info-item label{font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.28);display:block;margin-bottom:5px;}
+.info-item span{font-size:14px;font-weight:500;color:var(--light);}
+.loc-badge{
+  display:flex;align-items:center;gap:10px;
+  background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);
+  padding:12px 16px;margin-bottom:20px;
+  font-size:13px;font-weight:700;color:rgba(255,255,255,0.65);
+}
+.loc-dot{width:8px;height:8px;background:var(--acid);border-radius:50%;flex-shrink:0;}
+.notes-text{font-size:13px;font-weight:300;color:rgba(255,255,255,0.45);line-height:1.65;margin-bottom:28px;}
+.detail-cta{margin-top:auto;}
+.btn-acid{
+  display:block;width:100%;background:var(--acid);color:var(--ink);border:none;
+  padding:15px;font-family:'MuseoSans',sans-serif;
+  font-size:14px;font-weight:700;letter-spacing:0.5px;cursor:pointer;
+  transition:opacity 0.2s;text-align:center;
+}
+.btn-acid:hover{opacity:0.88;}
+.btn-ghost{
+  display:block;width:100%;background:transparent;color:rgba(255,255,255,0.4);
+  border:1px solid rgba(255,255,255,0.12);
+  padding:11px;font-family:'MuseoSans',sans-serif;
+  font-size:12px;font-weight:700;cursor:pointer;
+  margin-top:10px;transition:all 0.2s;letter-spacing:0.5px;
+}
+.btn-ghost:hover{border-color:rgba(255,255,255,0.35);color:rgba(255,255,255,0.7);}
+
+/* ===== MODAL ===== */
+.overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,0.82);
+  z-index:500;display:none;align-items:center;justify-content:center;
+  padding:20px;
+}
+.overlay.open{display:flex;}
+.modal{
+  background:var(--ink);border:1px solid rgba(255,255,255,0.1);
+  width:100%;max-width:500px;padding:40px;position:relative;
+}
+.modal-close{
+  position:absolute;top:14px;right:18px;
+  font-size:22px;color:rgba(255,255,255,0.35);cursor:pointer;
+  background:none;border:none;line-height:1;font-family:sans-serif;
+}
+.modal-close:hover{color:var(--light);}
+.modal-eye{font-size:9px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--acid);margin-bottom:6px;}
+.modal-h{font-size:22px;font-weight:900;color:var(--light);margin-bottom:6px;}
+.modal-sub{font-size:13px;font-weight:300;color:rgba(255,255,255,0.4);margin-bottom:28px;}
+.modal-sub strong{color:var(--acid);font-weight:700;}
+.fgrp{margin-bottom:16px;}
+.fgrp label{display:block;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.35);margin-bottom:7px;}
+.fgrp input,.fgrp textarea{
+  width:100%;background:rgba(255,255,255,0.05);
+  border:1.5px solid rgba(255,255,255,0.1);
+  color:var(--light);padding:11px 14px;
+  font-family:'MuseoSans',sans-serif;font-size:14px;font-weight:500;
+  outline:none;transition:border-color 0.2s;
+}
+.fgrp input:focus,.fgrp textarea:focus{border-color:var(--acid);}
+.fgrp input::placeholder,.fgrp textarea::placeholder{color:rgba(255,255,255,0.22);}
+.fgrp textarea{resize:vertical;min-height:80px;}
+.frow{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.btn-submit{
+  width:100%;background:var(--acid);color:var(--ink);border:none;
+  padding:15px;font-family:'MuseoSans',sans-serif;
+  font-size:14px;font-weight:700;cursor:pointer;margin-top:6px;
+  letter-spacing:0.5px;transition:opacity 0.2s;
+}
+.btn-submit:hover{opacity:0.88;}
+
+/* success */
+.success-wrap{display:none;text-align:center;padding:10px 0;}
+.success-icon{
+  width:54px;height:54px;background:var(--acid);border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  margin:0 auto 18px;font-size:22px;color:var(--ink);font-weight:900;
+}
+.success-wrap h3{font-size:21px;font-weight:900;margin-bottom:8px;}
+.success-wrap p{font-size:13px;font-weight:300;color:rgba(255,255,255,0.45);line-height:1.65;max-width:320px;margin:0 auto 24px;}
+
+/* scrollbar */
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:var(--ink);}
+::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.08);}
+</style>
+</head>
+<body>
+
+<!-- ===== NAV ===== -->
+<nav>
+  <div class="nav-logo" onclick="showPage('home')">
+    <svg version="1.1" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 747.1 461.2" style="height:46px;width:auto;display:block;">
+      <path fill="#D4FF03" d="M307.5,250.3c0,29.4,23,59.4,61.5,59.4V154.1h-61.5V250.3z"/>
+      <path fill="#D4FF03" d="M438.9,250.3c0,29.4-23,59.4-61.5,59.4V154.1h61.5V250.3z"/>
+      <rect fill="#D4FF03" x="154.8" y="154.1" width="62.5" height="153.8"/>
+      <rect fill="#D4FF03" x="225.8" y="154.1" width="61.9" height="153.8"/>
+      <polygon fill="#D4FF03" points="522.5,154.1 460.3,154.1 460.3,231 460.3,231.1 460.3,307.9 522.5,307.9"/>
+      <path fill="#D4FF03" d="M555.7,231c21-0.3,37.9-17.4,37.9-38.4c0-21.2-17.2-38.5-38.4-38.5l0,0l0,0H531v153.8h24.1l0,0c21.2,0,38.4-17.2,38.4-38.5C593.5,248.4,576.6,231.3,555.7,231z"/>
+    </svg>
+    <span class="nav-logo-sub">Prop Room</span>
+  </div>
+  <div class="nav-links">
+    <span class="nav-link active" id="nl-home" onclick="showPage('home')">Home</span>
+    <span class="nav-link" id="nl-catalogue" onclick="showPage('catalogue')">Catalogue</span>
+    <span class="nav-link acid" onclick="openAddProp()">+ Add Prop</span>
+  </div>
+</nav>
+
+<!-- ===================== HOME PAGE ===================== -->
+<div id="page-home" class="page active">
+
+  <div class="hero">
+    <div class="hero-bg-word">HUB</div>
+    <div class="eyebrow">HUB Studio</div>
+    <h1>The <em>Prop</em><br>Room.</h1>
+    <p class="hero-sub">Find, request and track every prop in the studio.</p>
+    <div class="search-wrap">
+      <input type="text" id="home-search" placeholder="Search by name, category, colour, material..." onkeydown="if(event.key==='Enter')goSearch()">
+      <button onclick="goSearch()">Search</button>
+    </div>
+    <div class="cat-pills" id="cat-pills"></div>
+  </div>
+
+  <div class="stats-bar">
+    <div class="stat"><div class="stat-n" id="stat-total" style="color:var(--light)">—</div><div class="stat-l">Total Props</div></div>
+    <div class="stat"><div class="stat-n" id="stat-available" style="color:var(--cupric)">—</div><div class="stat-l">Available Now</div></div>
+    <div class="stat"><div class="stat-n" id="stat-inuse" style="color:var(--carotene)">—</div><div class="stat-l">In Use</div></div>
+    <div class="stat"><div class="stat-n" id="stat-reserved" style="color:rgba(212,255,3,0.7)">—</div><div class="stat-l">Reserved</div></div>
+  </div>
+
+  <div class="section">
+    <div class="section-hd">
+      <div class="section-title">Featured Props</div>
+      <span class="section-more" onclick="showPage('catalogue')">Browse all props →</span>
+    </div>
+    <div class="prop-grid" id="home-grid"></div>
+  </div>
+
+</div>
+
+<!-- ===================== CATALOGUE PAGE ===================== -->
+<div id="page-catalogue" class="page">
+  <div class="cat-layout">
+
+    <div class="sidebar">
+      <div class="fg">
+        <div class="fg-title">Category</div>
+        <div id="sidebar-cats"></div>
+      </div>
+      <div class="fg">
+        <div class="fg-title">Status</div>
+        <div id="sidebar-status"></div>
+      </div>
+      <div class="fg">
+        <div class="fg-title">Location</div>
+        <div id="sidebar-locs"></div>
+      </div>
+    </div>
+
+    <div class="cat-main">
+      <div class="cat-toolbar">
+        <div class="search-wrap" style="max-width:340px;margin-bottom:0;">
+          <input type="text" id="cat-search" placeholder="Search props..." oninput="renderCat()">
+          <button onclick="renderCat()">Go</button>
+        </div>
+        <select class="sort-sel" id="sort-sel" onchange="renderCat()">
+          <option value="default">Newest first</option>
+          <option value="az">A – Z</option>
+          <option value="cat">By category</option>
+        </select>
+        <div class="rcount" id="rcount">12 props</div>
+      </div>
+      <div class="active-chips" id="chips"></div>
+      <div class="prop-grid" id="cat-grid"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ===================== DETAIL PAGE ===================== -->
+<div id="page-detail" class="page">
+  <div class="detail-nav">
+    <button class="back-btn" onclick="showPage('catalogue')">← Back to catalogue</button>
+  </div>
+  <div class="detail-layout">
+    <div class="detail-img-wrap">
+      <img id="d-img" class="detail-img" src="" alt="" onerror="this.src='';this.style.background='var(--ink3)'">
+    </div>
+    <div class="detail-panel">
+      <div class="detail-cat" id="d-cat"></div>
+      <div class="detail-title" id="d-title"></div>
+      <div class="detail-tags" id="d-tags"></div>
+      <hr class="div">
+      <div class="info-grid">
+        <div class="info-item"><label>Colour</label><span id="d-colour"></span></div>
+        <div class="info-item"><label>Condition</label><span id="d-condition"></span></div>
+        <div class="info-item"><label>Material</label><span id="d-material"></span></div>
+        <div class="info-item"><label>Status</label><span id="d-status"></span></div>
+      </div>
+      <div class="loc-badge"><div class="loc-dot"></div><span id="d-location"></span></div>
+      <div class="notes-text" id="d-notes"></div>
+      <div class="detail-cta">
+        <button class="btn-acid" onclick="openModal()">Request this prop</button>
+        <button class="btn-ghost">Flag an issue</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== REQUEST MODAL ===================== -->
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div id="modal-form">
+      <div class="modal-eye">Request a Prop</div>
+      <div class="modal-h">Book it in.</div>
+      <div class="modal-sub">Requesting: <strong id="m-propname"></strong></div>
+      <div class="frow">
+        <div class="fgrp"><label>Your Name</label><input id="req-name" type="text" placeholder="Jane Smith"></div>
+        <div class="fgrp"><label>Your Email</label><input id="req-email" type="email" placeholder="jane@thisishub.com"></div>
+      </div>
+      <div class="frow">
+        <div class="fgrp"><label>Shoot Date</label><input id="req-shoot" type="date"></div>
+        <div class="fgrp"><label>Return Date</label><input id="req-return" type="date"></div>
+      </div>
+      <div class="fgrp"><label>Notes</label><textarea id="req-notes" placeholder="Client, usage, shoot details..."></textarea></div>
+      <button class="btn-submit" onclick="submitRequest()">Submit Request</button>
+    </div>
+    <div class="success-wrap" id="modal-success">
+      <div class="success-icon">✓</div>
+      <h3>Request submitted.</h3>
+      <p>The studio team will confirm availability and get back to you shortly.</p>
+      <button class="btn-acid" style="max-width:200px;margin:0 auto;" onclick="closeModal()">Done</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===================== ADD PROP MODAL ===================== -->
+<div class="overlay" id="add-prop-overlay" onclick="if(event.target===this)closeAddProp()">
+  <div class="modal" style="max-width:560px;">
+    <button class="modal-close" onclick="closeAddProp()">×</button>
+
+    <!-- Password gate -->
+    <div id="ap-auth">
+      <div class="modal-eye" style="color:var(--cupric)">Admin</div>
+      <div class="modal-h">Enter admin password</div>
+      <div class="modal-sub">Required to add props to the library.</div>
+      <div class="fgrp">
+        <label>Password</label>
+        <input id="ap-password" type="password" placeholder="••••••••" onkeydown="if(event.key==='Enter')unlockAdmin()">
+      </div>
+      <div id="ap-auth-error" style="color:var(--carotene);font-size:12px;margin-bottom:14px;display:none;">Incorrect password — try again.</div>
+      <button class="btn-submit" onclick="unlockAdmin()">Continue</button>
+    </div>
+
+    <!-- Add Prop form -->
+    <div id="ap-form" style="display:none;">
+      <div class="modal-eye" style="color:var(--cupric)">Admin · Add Prop</div>
+      <div class="modal-h">New prop to library</div>
+      <div class="fgrp">
+        <label>Name <span style="color:var(--carotene)">*</span></label>
+        <input id="ap-name" type="text" placeholder="e.g. Brass Table Lamp">
+      </div>
+      <div class="frow">
+        <div class="fgrp">
+          <label>Category</label>
+          <input id="ap-cat" type="text" list="ap-cat-list" placeholder="e.g. Lighting">
+          <datalist id="ap-cat-list"></datalist>
+        </div>
+        <div class="fgrp">
+          <label>Status</label>
+          <select id="ap-status" class="sort-sel" style="width:100%;height:44px;background:rgba(255,255,255,0.05);color:var(--light);">
+            <option value="Available">Available</option>
+            <option value="In Use">In Use</option>
+            <option value="Reserved">Reserved</option>
+          </select>
+        </div>
+      </div>
+      <div class="frow">
+        <div class="fgrp">
+          <label>Location</label>
+          <input id="ap-loc" type="text" list="ap-loc-list" placeholder="e.g. Prop Room A">
+          <datalist id="ap-loc-list"></datalist>
+        </div>
+        <div class="fgrp">
+          <label>Condition</label>
+          <select id="ap-condition" class="sort-sel" style="width:100%;height:44px;background:rgba(255,255,255,0.05);color:var(--light);">
+            <option value="">— select —</option>
+            <option value="Excellent">Excellent</option>
+            <option value="Good">Good</option>
+            <option value="Fair">Fair</option>
+          </select>
+        </div>
+      </div>
+      <div class="fgrp">
+        <label>Photo URL <span style="opacity:0.4;font-weight:300;text-transform:none;letter-spacing:0;">— paste Cloudinary link</span></label>
+        <input id="ap-photo" type="url" placeholder="https://res.cloudinary.com/...">
+      </div>
+      <div class="frow">
+        <div class="fgrp"><label>Colour</label><input id="ap-colour" type="text" placeholder="e.g. Brass"></div>
+        <div class="fgrp"><label>Material</label><input id="ap-material" type="text" placeholder="e.g. Brass & Glass"></div>
+      </div>
+      <div class="fgrp">
+        <label>Tags <span style="opacity:0.4;font-weight:300;text-transform:none;letter-spacing:0;">comma-separated</span></label>
+        <input id="ap-tags" type="text" placeholder="e.g. vintage, hero, fragile">
+      </div>
+      <div class="fgrp"><label>Notes</label><textarea id="ap-notes" placeholder="Anything the team should know..."></textarea></div>
+      <button class="btn-submit" id="ap-submit-btn" onclick="submitAddProp()">Add to Library</button>
+    </div>
+
+    <!-- Success -->
+    <div class="success-wrap" id="ap-success">
+      <div class="success-icon">✓</div>
+      <h3>Prop added.</h3>
+      <p>It's now live in the library.</p>
+      <button class="btn-acid" style="max-width:200px;margin:0 auto;" onclick="closeAddProp()">Done</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===== STATE =====
+let PROPS = [];
+let state = { category:'All', status:null, location:null };
+let currentProp = null;
+
+// ===== HELPERS =====
+function badgeClass(s){ return s==='Available'?'b-available':s==='In Use'?'b-inuse':'b-reserved'; }
+function cardHTML(p){
+  return `<div class="prop-card" onclick="showDetail('${p.id}')">
+    <div class="card-img-wrap">
+      <img class="card-img" src="${p.img}" alt="${p.name}" loading="lazy" onerror="this.style.background='var(--ink3)'">
+      <div class="card-hover"><button class="card-hover-btn">View details</button></div>
+    </div>
+    <div class="card-body">
+      <div class="card-cat">${p.cat}</div>
+      <div class="card-name">${p.name}</div>
+      <div class="card-foot">
+        <div class="card-loc">◎ ${p.loc}</div>
+        <div class="badge ${badgeClass(p.status)}">${p.status}</div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ===== LOAD PROPS FROM NOTION =====
+async function loadProps(){
+  document.getElementById('home-grid').innerHTML = '<div style="color:rgba(255,255,255,0.25);font-size:13px;padding:20px 0;">Loading props...</div>';
+  document.getElementById('cat-grid').innerHTML = '<div style="color:rgba(255,255,255,0.25);font-size:13px;padding:20px 0;">Loading props...</div>';
+  try {
+    const res = await fetch('/.netlify/functions/props');
+    if (!res.ok) throw new Error('API error ' + res.status);
+    PROPS = await res.json();
+  } catch(err) {
+    console.error('Could not load props:', err);
+    PROPS = [];
+    document.getElementById('home-grid').innerHTML = '<div class="empty-state"><strong>Could not load props</strong>Check back shortly.</div>';
+  }
+  updateStats();
+  renderPills();
+  renderSidebar();
+  renderHome();
+  renderCat();
+}
+
+// ===== DYNAMIC PILLS & SIDEBAR =====
+function renderPills(){
+  const cats = [...new Set(PROPS.map(p=>p.cat).filter(Boolean))].sort();
+  document.getElementById('cat-pills').innerHTML =
+    `<div class="pill${state.category==='All'?' active':''}" onclick="setPill(this,'All')">All Props</div>` +
+    cats.map(c=>`<div class="pill${state.category===c?' active':''}" onclick="setPill(this,'${c}')">${c}</div>`).join('');
+}
+
+function renderSidebar(){
+  // Categories
+  const cats = [...new Set(PROPS.map(p=>p.cat).filter(Boolean))].sort();
+  document.getElementById('sidebar-cats').innerHTML =
+    foHTML('All', PROPS.length, state.category==='All', `setFilter(this,'category','All')`) +
+    cats.map(c => foHTML(c, PROPS.filter(p=>p.cat===c).length, state.category===c, `setFilter(this,'category','${c}')`)).join('');
+
+  // Status (fixed set, dynamic counts)
+  ['Available','In Use','Reserved'].forEach(s=>{
+    // rebuild each time to keep counts live
+  });
+  document.getElementById('sidebar-status').innerHTML =
+    ['Available','In Use','Reserved'].map(s =>
+      foHTML(s, PROPS.filter(p=>p.status===s).length, state.status===s, `toggleFilter(this,'status','${s}')`)
+    ).join('');
+
+  // Locations
+  const locs = [...new Set(PROPS.map(p=>p.loc).filter(Boolean))].sort();
+  document.getElementById('sidebar-locs').innerHTML =
+    locs.map(l => foHTML(l, PROPS.filter(p=>p.loc===l).length, state.location===l, `toggleFilter(this,'location','${l}')`)).join('');
+}
+
+function foHTML(label, count, active, onclick){
+  return `<div class="fo${active?' active':''}" onclick="${onclick}"><div class="fcheck">✓</div>${label}<span class="fcount">${count}</span></div>`;
+}
+
+function updateStats(){
+  const total = PROPS.length;
+  const avail = PROPS.filter(p=>p.status==='Available').length;
+  const inuse = PROPS.filter(p=>p.status==='In Use').length;
+  const res   = PROPS.filter(p=>p.status==='Reserved').length;
+  document.getElementById('stat-total').textContent     = total;
+  document.getElementById('stat-available').textContent = avail;
+  document.getElementById('stat-inuse').textContent     = inuse;
+  document.getElementById('stat-reserved').textContent  = res;
+}
+
+// ===== NAV =====
+function showPage(p){
+  document.querySelectorAll('.page').forEach(el=>el.classList.remove('active'));
+  document.querySelectorAll('.nav-link').forEach(el=>el.classList.remove('active'));
+  document.getElementById('page-'+p).classList.add('active');
+  const nl = document.getElementById('nl-'+(p==='detail'?'catalogue':p));
+  if(nl) nl.classList.add('active');
+  window.scrollTo(0,0);
+  if(p==='catalogue') renderCat();
+}
+
+// ===== HOME =====
+function renderHome(){
+  const grid = document.getElementById('home-grid');
+  if(!PROPS.length){ grid.innerHTML='<div class="empty-state"><strong>No props yet</strong>Add your first prop in Notion.</div>'; return; }
+  grid.innerHTML = PROPS.slice(0,8).map(cardHTML).join('');
+}
+function setPill(el,cat){ state.category=cat; renderPills(); renderSidebar(); showPage('catalogue'); }
+function goSearch(){
+  const q = document.getElementById('home-search').value;
+  document.getElementById('cat-search').value = q;
+  showPage('catalogue');
+}
+
+// ===== CATALOGUE =====
+function renderCat(){
+  const q = (document.getElementById('cat-search')?.value||'').toLowerCase();
+  const sort = document.getElementById('sort-sel')?.value||'default';
+  let list = PROPS.filter(p=>{
+    const mq = !q || p.name.toLowerCase().includes(q)||p.cat.toLowerCase().includes(q)||(p.colour||'').toLowerCase().includes(q)||p.tags.some(t=>t.includes(q));
+    const mc = state.category==='All'||p.cat===state.category;
+    const ms = !state.status||p.status===state.status;
+    const ml = !state.location||p.loc===state.location;
+    return mq&&mc&&ms&&ml;
+  });
+  if(sort==='az') list=[...list].sort((a,b)=>a.name.localeCompare(b.name));
+  if(sort==='cat') list=[...list].sort((a,b)=>a.cat.localeCompare(b.cat));
+  document.getElementById('rcount').textContent = list.length+' prop'+(list.length!==1?'s':'');
+  document.getElementById('cat-grid').innerHTML = list.length
+    ? list.map(cardHTML).join('')
+    : '<div class="empty-state"><strong>No props found</strong>Try adjusting your filters or search term.</div>';
+  renderChips();
+}
+
+function setFilter(el,type,val){ state[type]=val; renderSidebar(); renderPills(); renderCat(); }
+function toggleFilter(el,type,val){ state[type]=state[type]===val?null:val; renderSidebar(); renderCat(); }
+
+function renderChips(){
+  const chips=[];
+  if(state.category&&state.category!=='All') chips.push({t:'category',v:state.category});
+  if(state.status) chips.push({t:'status',v:state.status});
+  if(state.location) chips.push({t:'location',v:state.location});
+  document.getElementById('chips').innerHTML=chips.map(c=>`<div class="chip">${c.v}<span class="chip-x" onclick="clearF('${c.t}')">×</span></div>`).join('');
+}
+function clearF(type){ state[type]=type==='category'?'All':null; renderSidebar(); renderPills(); renderCat(); }
+
+// ===== DETAIL =====
+function showDetail(id){
+  const p=PROPS.find(x=>x.id===id);
+  if(!p) return;
+  currentProp=p;
+  document.getElementById('d-img').src=p.img;
+  document.getElementById('d-cat').textContent=p.cat;
+  document.getElementById('d-title').textContent=p.name;
+  document.getElementById('d-colour').textContent=p.colour;
+  document.getElementById('d-condition').textContent=p.condition;
+  document.getElementById('d-material').textContent=p.material;
+  document.getElementById('d-status').innerHTML=`<span class="badge ${badgeClass(p.status)}" style="padding:4px 10px;font-size:10px">${p.status}</span>`;
+  document.getElementById('d-location').textContent=p.loc;
+  document.getElementById('d-notes').textContent=p.notes;
+  document.getElementById('d-tags').innerHTML=p.tags.map(t=>`<div class="tag">${t}</div>`).join('');
+  showPage('detail');
+}
+
+// ===== MODAL =====
+function openModal(){
+  document.getElementById('modal-form').style.display='block';
+  document.getElementById('modal-success').style.display='none';
+  document.getElementById('m-propname').textContent=currentProp?.name||'';
+  document.getElementById('overlay').classList.add('open');
+}
+function closeModal(){ document.getElementById('overlay').classList.remove('open'); }
+
+async function submitRequest(){
+  const btn = document.querySelector('.btn-submit');
+  const requesterName = document.querySelector('#req-name')?.value.trim();
+  const email         = document.querySelector('#req-email')?.value.trim();
+  const shootDate     = document.querySelector('#req-shoot')?.value;
+  const returnDate    = document.querySelector('#req-return')?.value;
+  const notes         = document.querySelector('#req-notes')?.value.trim();
+
+  if(!requesterName||!email){ alert('Please fill in your name and email.'); return; }
+
+  btn.textContent = 'Submitting...';
+  btn.disabled = true;
+
+  try {
+    const res = await fetch('/.netlify/functions/submit-request', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        propName: currentProp?.name || '',
+        requesterName, email, shootDate, returnDate, notes
+      })
+    });
+    if(!res.ok) throw new Error('Submit failed');
+    document.getElementById('modal-form').style.display='none';
+    document.getElementById('modal-success').style.display='block';
+  } catch(err) {
+    alert('Something went wrong — please try again.');
+    btn.textContent = 'Submit Request';
+    btn.disabled = false;
+  }
+}
+
+// ===== ADD PROP (ADMIN) =====
+let adminUnlocked = false;
+let adminPassword = '';
+
+function openAddProp(){
+  const overlay = document.getElementById('add-prop-overlay');
+  overlay.classList.add('open');
+  document.getElementById('ap-success').style.display = 'none';
+  if(adminUnlocked){
+    document.getElementById('ap-auth').style.display = 'none';
+    document.getElementById('ap-form').style.display = 'block';
+    populateAdminDataLists();
+  } else {
+    document.getElementById('ap-auth').style.display = 'block';
+    document.getElementById('ap-form').style.display = 'none';
+    document.getElementById('ap-auth-error').style.display = 'none';
+    setTimeout(()=>document.getElementById('ap-password').focus(), 100);
+  }
+}
+function closeAddProp(){ document.getElementById('add-prop-overlay').classList.remove('open'); }
+
+function unlockAdmin(){
+  const pw = document.getElementById('ap-password').value;
+  if(!pw) return;
+  adminPassword = pw;
+  adminUnlocked = true;
+  document.getElementById('ap-auth').style.display = 'none';
+  document.getElementById('ap-form').style.display = 'block';
+  populateAdminDataLists();
+  // Clear form fields for fresh entry
+  ['ap-name','ap-cat','ap-loc','ap-photo','ap-colour','ap-material','ap-tags','ap-notes'].forEach(id=>{
+    const el = document.getElementById(id); if(el) el.value='';
+  });
+  document.getElementById('ap-status').value = 'Available';
+  document.getElementById('ap-condition').value = '';
+}
+
+function populateAdminDataLists(){
+  const cats = [...new Set(PROPS.map(p=>p.cat).filter(Boolean))].sort();
+  document.getElementById('ap-cat-list').innerHTML = cats.map(c=>`<option value="${c}">`).join('');
+  const locs = [...new Set(PROPS.map(p=>p.loc).filter(Boolean))].sort();
+  document.getElementById('ap-loc-list').innerHTML = locs.map(l=>`<option value="${l}">`).join('');
+}
+
+async function submitAddProp(){
+  const name = document.getElementById('ap-name').value.trim();
+  if(!name){ alert('Name is required.'); return; }
+  const btn = document.getElementById('ap-submit-btn');
+  btn.textContent = 'Adding...'; btn.disabled = true;
+  try {
+    const res = await fetch('/.netlify/functions/add-prop', {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({
+        password:  adminPassword,
+        name,
+        category:  document.getElementById('ap-cat').value.trim(),
+        photoUrl:  document.getElementById('ap-photo').value.trim(),
+        location:  document.getElementById('ap-loc').value.trim(),
+        status:    document.getElementById('ap-status').value,
+        colour:    document.getElementById('ap-colour').value.trim(),
+        material:  document.getElementById('ap-material').value.trim(),
+        condition: document.getElementById('ap-condition').value,
+        tags:      document.getElementById('ap-tags').value.trim(),
+        notes:     document.getElementById('ap-notes').value.trim(),
+      })
+    });
+    if(res.status === 401){
+      adminUnlocked = false; adminPassword = '';
+      document.getElementById('ap-form').style.display = 'none';
+      document.getElementById('ap-auth').style.display = 'block';
+      document.getElementById('ap-auth-error').style.display = 'block';
+      document.getElementById('ap-password').value = '';
+      btn.textContent = 'Add to Library'; btn.disabled = false;
+      return;
+    }
+    if(!res.ok) throw new Error('Failed');
+    document.getElementById('ap-form').style.display = 'none';
+    document.getElementById('ap-success').style.display = 'block';
+    loadProps(); // refresh library in background
+  } catch(err){
+    alert('Something went wrong — please try again.');
+    btn.textContent = 'Add to Library'; btn.disabled = false;
+  }
+}
+
+// ===== INIT =====
+loadProps();
+</script>
+</body>
+</html>
